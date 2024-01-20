@@ -20,6 +20,8 @@ while True:
 
     image = cv2.resize(image, (0, 0), fx=2, fy=2)
 
+ # gay
+
     cv2.imshow('frame', image)
 
     if cv2.waitKey(1) == ord('q'):
