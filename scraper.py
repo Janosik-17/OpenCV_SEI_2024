@@ -20,21 +20,12 @@ def scrape_site(url_input):
     page = session.get(url).content
     soup = BeautifulSoup(page, "html.parser")
     content = soup.find("div", class_="entry-content")
-    content_divs = content.find_all("div")
+    content_divs = content.find_all("div", class_="wp-block-image")
     for div in content_divs:
-        if div.get("class") == "wp-block-spacer":
-            continue
-        else:
             under_div = div.find("img")
-            if type(under_div) == None:
-                continue
-            else:
-                img_list.append(under_div.get("src"))
-            under_div2 = div.find("strong")
-            if type(under_div2) == None:
-                continue
-            else:
-                info_list.append(under_div2.get_text())
+            img_src = under_div.get("src")
+            img_list.append(img_src.encode("utf-8"))
+            print(img_src.encode("utf-8"))
     print(img_list)
     print(info_list)
     return 0
