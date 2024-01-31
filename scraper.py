@@ -6,12 +6,7 @@ def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 base_url = "https://bilgym.sk/"
-projektanti = "programy-a-projekty-skoly/"
-nepedagogicka_podpora = "nepedagogicka-podpora/"
-podporný_tím = "kontakt-podporny-tim/"
-ucitelia = "kontakt-ucitelia/"
-spravna_rada = "spravna-rada/"
-vedenie = "kontakt-vedenie-skoly/"
+koncovky = ["programy-a-projekty-skoly/", "nepedagogicka-podpora/", "kontakt-podporny-tim/", "kontakt-ucitelia/", "spravna-rada/", "kontakt-vedenie-skoly/"]
 
 def scrape_site(url_input):
     img_list = []
@@ -37,7 +32,17 @@ def scrape_site(url_input):
         info_list.append(info)
     print(img_list)
     print(info_list)
-    return img_list
+    return img_list, info_list
 
-scrape_site(ucitelia)
+def scrape_all(koncovky):
+    over_img_list = []
+    over_info_list = []
+    for num in range(0, 5):
+        ret_img_list, ret_info_list = scrape_site(koncovky[num])
+        over_img_list.append(ret_img_list)
+        over_info_list.append(ret_info_list)
+    return over_img_list, over_info_list
+
+
+print(scrape_all(koncovky))
         
