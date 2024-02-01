@@ -30,8 +30,6 @@ def scrape_site(url_input):
         under_inf = inf.find("strong")
         info = under_inf.get_text().encode("utf-8")
         info_list.append(info)
-    print(img_list)
-    print(info_list)
     return img_list, info_list
 
 def scrape_all(koncovky):
@@ -44,5 +42,6 @@ def scrape_all(koncovky):
     return over_img_list, over_info_list
 
 
-print(scrape_all(koncovky))
-        
+img_list, info_list = scrape_all(koncovky)
+print (img_list)
+# teraz treba tie linky vytriediť z listov a b' co tam idk preco su a potom ich stiahnuť a ak ich to stiahne aj s menom je to done
