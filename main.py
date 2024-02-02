@@ -1,29 +1,45 @@
 import cv2
 import numpy as np
+import face_recognition
+import os, sys
+import math
+import scraper
 
-cap = cv2.VideoCapture(0)
+def face_confidence(face_distace, face_match_threshold=0.6):
+    range = (1.0 - face_match_threshold)
+    linear_val = (1.0 - face_distace) / (range * 2.0)
 
-while True:
-    ret, frame = cap.read()
-    width = int(cap.get(3))
-    height = int(cap.get(4))
+    if face_distace > face_match_threshold:
+        return str(round(linear_val * 100, 2)) + "%"
+    else:
+        value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
+        return str(round(value, 2)) + "%"
+    
+class FaceRecognition:
+    face_locations = []
+    face_encodings = []
+    face_names = []
+    known_face_names = []
+    known_face_encodings = []
+    process_current_frame = True
 
-    image = np.zeros(frame.shape, np.uint8)
-    smaller_frame = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
+    def __init__(self):
+        self.encode_faces()
+    
+    def encode_faces(self):
+        for image in os.listdir("faces"):
+            face_image = face_recognition.load_image_file(f"faces/{image}")
+            face_encoding = face_recognition.face_encodings(face_image)[0]
+        
+        #exception handling if "faces" folder is empty
+        try:
+            self.known_face_encodings.append(face_encoding)
+            self.known_face_names.append(image)
+        except UnboundLocalError:
+            print("No item in directory 'faces'.")
 
-    image[:height // 2, :width // 2] = cv2.flip(smaller_frame, 1)
-    left_frame = cv2.flip(smaller_frame, 0)
-    image[height // 2:, :width // 2] = cv2.flip(left_frame, 1)
-    image[height // 2:, :width // 2] = cv2.flip(smaller_frame, 0)
-    image[:height // 2, width // 2:] = smaller_frame
-    image[height // 2:, width // 2:] = cv2.flip(smaller_frame, 0)
+        print(self.known_face_names)
 
-    image = cv2.resize(image, (0, 0), fx=2, fy=2)
 
-    cv2.imshow('frame', image)
-
-    if cv2.waitKey(1) == ord('q'):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
+if __name__ == "__main__":
+    fr = FaceRecognition()
