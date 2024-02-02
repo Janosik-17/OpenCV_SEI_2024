@@ -3,7 +3,6 @@ import numpy as np
 import face_recognition
 import os, sys
 import math
-import scraper
 
 def face_confidence(face_distace, face_match_threshold=0.6):
     range = (1.0 - face_match_threshold)
