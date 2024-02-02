@@ -41,7 +41,15 @@ def scrape_all(koncovky):
         over_info_list.append(ret_info_list)
     return over_img_list, over_info_list
 
+def compile_list(input_list):
+    output_list = []
+    for element in input_list:
+        for element_2 in element:
+            output_list.append(element_2)
+            print(element_2)
+    
+    return output_list
 
 img_list, info_list = scrape_all(koncovky)
-print (img_list)
+compile_list(img_list)
 # teraz treba tie linky vytriediť z listov a b' co tam idk preco su a potom ich stiahnuť a ak ich to stiahne aj s menom je to done
