@@ -2,11 +2,11 @@ from requests_html import HTMLSession
 session = HTMLSession()
 from bs4 import BeautifulSoup
 from difflib import SequenceMatcher
-def similar(a, b):
-    return SequenceMatcher(None, a, b).ratio()
+import requests
 
 base_url = "https://bilgym.sk/"
 koncovky = ["programy-a-projekty-skoly/", "nepedagogicka-podpora/", "kontakt-podporny-tim/", "kontakt-ucitelia/", "spravna-rada/", "kontakt-vedenie-skoly/"]
+query_parameters = {"downloadformat": "jpg"}
 
 def scrape_site(url_input):
     img_list = []
@@ -45,11 +45,19 @@ def compile_list(input_list):
     output_list = []
     for element in input_list:
         for element_2 in element:
-            output_list.append(element_2)
-            print(element_2)
-    
+            output_list.append(element_2)    
     return output_list
 
+def download_images(input_list):
+    for image_url in input_list:
+        print(image_url)
+        response = requests.get(image_url, query_parameters)
+        with open("faces_under.zip", mode="wb") as f:
+            f.write(response.content)
+            f.close
+    return 0
+
 img_list, info_list = scrape_all(koncovky)
-compile_list(img_list)
+img_list = compile_list(img_list)
+download_images(img_list)
 # teraz treba tie linky vytriediť z listov a b' co tam idk preco su a potom ich stiahnuť a ak ich to stiahne aj s menom je to done
