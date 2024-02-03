@@ -13,7 +13,7 @@ def face_confidence(face_distace, face_match_threshold=0.6):
     else:
         value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
         return str(round(value, 2)) + "%"
-    
+
 class FaceRecognition:
     face_locations = []
     face_encodings = []
