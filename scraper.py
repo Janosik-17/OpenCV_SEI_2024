@@ -57,7 +57,9 @@ def download_images(input_list):
             f.close
     return 0
 
-img_list, info_list = scrape_all(koncovky)
-img_list = compile_list(img_list)
-download_images(img_list)
+#check if running as script
+if __name__ == '__main__':
+    img_list, info_list = scrape_all(koncovky)
+    img_list = compile_list(img_list)
+    download_images(img_list)
 # teraz treba tie linky vytriediť z listov a b' co tam idk preco su a potom ich stiahnuť a ak ich to stiahne aj s menom je to done
