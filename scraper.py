@@ -10,6 +10,7 @@ base_url = "https://bilgym.sk/"
 koncovky = ["programy-a-projekty-skoly/", "nepedagogicka-podpora/", "kontakt-podporny-tim/", "kontakt-ucitelia/", "spravna-rada/", "kontakt-vedenie-skoly/"]
 query_parameters = {"downloadformat": "jpg"}
 
+
 def scrape_site(url_input):
     img_list = []
     info_list = []
@@ -34,6 +35,7 @@ def scrape_site(url_input):
         info_list.append(info)
     return img_list, info_list
 
+
 def scrape_all(koncovky):
     over_img_list = []
     over_info_list = []
@@ -43,6 +45,7 @@ def scrape_all(koncovky):
         over_info_list.append(ret_info_list)
     return over_img_list, over_info_list
 
+
 def compile_list(input_list):
     output_list = []
     for element in input_list:
@@ -50,30 +53,29 @@ def compile_list(input_list):
             output_list.append(element_2)    
     return output_list
 
-def download_images(input_list):
-    for image_url in input_list:
-        print(image_url)
-        response = requests.get(image_url, query_parameters)
-        with open("faces_under.zip", mode="wb") as f:
-            f.write(response.content.encode("utf-8"))
-            f.close
-    return 0
 
-def download_images_fixed(input_list):
-    for img_data in input_list:
+def download_images(img_urls, download_folder):
+    for img_data in img_urls:
         try:
-            # img_data is already in bytes, no need to encode
-            filename = os.path.basename(img_data)
-            response = requests.get(img_data)
-            with open(f"C:\\Users\\filip\\Documents\\OpenCV_SEI_2024\\faces\\{filename}", "wb") as f:
+            img_url = img_data.decode("utf-8")  # Decode bytes to string
+            response = requests.get(img_url)
+            
+            # Extract filename from URL
+            filename = os.path.basename(img_url)
+            
+            # Save the image to the specified folder
+            with open(os.path.join(download_folder, filename), "wb") as f:
                 f.write(response.content)
+            
             print(f"Downloaded: {filename}")
         except Exception as e:
             print(f"Error downloading {img_data}: {e}")
+
 
 #check if running as script
 if __name__ == '__main__':
     img_list, info_list = scrape_all(koncovky)
     img_list = compile_list(img_list)
-    download_images_fixed(img_list)
+    faces = "C:\\Users\\filip\\Documents\\OpenCV_SEI_2024\\faces"
+    download_images(img_list, faces)
 # teraz treba tie linky vytriediť z listov a b' co tam idk preco su a potom ich stiahnuť a ak ich to stiahne aj s menom je to done
