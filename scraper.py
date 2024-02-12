@@ -78,4 +78,3 @@ if __name__ == '__main__':
     img_list = compile_list(img_list)
     faces = "C:\\Users\\filip\\Documents\\OpenCV_SEI_2024\\faces"
     download_images(img_list, faces)
-# teraz treba tie linky vytriediť z listov a b' co tam idk preco su a potom ich stiahnuť a ak ich to stiahne aj s menom je to done
