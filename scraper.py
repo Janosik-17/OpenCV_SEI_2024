@@ -3,6 +3,8 @@ session = HTMLSession()
 from bs4 import BeautifulSoup
 from difflib import SequenceMatcher
 import requests
+import urllib.request
+import os
 
 base_url = "https://bilgym.sk/"
 koncovky = ["programy-a-projekty-skoly/", "nepedagogicka-podpora/", "kontakt-podporny-tim/", "kontakt-ucitelia/", "spravna-rada/", "kontakt-vedenie-skoly/"]
@@ -53,13 +55,25 @@ def download_images(input_list):
         print(image_url)
         response = requests.get(image_url, query_parameters)
         with open("faces_under.zip", mode="wb") as f:
-            f.write(response.content)
+            f.write(response.content.encode("utf-8"))
             f.close
     return 0
+
+def download_images_fixed(input_list):
+    for img_data in input_list:
+        try:
+            # img_data is already in bytes, no need to encode
+            filename = os.path.basename(img_data)
+            response = requests.get(img_data)
+            with open(f"C:\\Users\\filip\\Documents\\OpenCV_SEI_2024\\faces\\{filename}", "wb") as f:
+                f.write(response.content)
+            print(f"Downloaded: {filename}")
+        except Exception as e:
+            print(f"Error downloading {img_data}: {e}")
 
 #check if running as script
 if __name__ == '__main__':
     img_list, info_list = scrape_all(koncovky)
     img_list = compile_list(img_list)
-    download_images(img_list)
+    download_images_fixed(img_list)
 # teraz treba tie linky vytriediť z listov a b' co tam idk preco su a potom ich stiahnuť a ak ich to stiahne aj s menom je to done
