@@ -94,6 +94,17 @@ class FaceRecognition:
         cv2.destroyAllWindows()
 
 
+def create_download_folder(subfolder):
+    main_directory = os.path.dirname(os.path.realpath(__file__))
+    download_folder = os.path.join(main_directory, subfolder)
+
+    if not os.path.exists(download_folder):
+        try:
+            os.makedirs(download_folder)
+            print(f"Download folder created: {download_folder}")
+        except Exception as e:
+            print(f"Error creating download folder: {e}")
+
 
 if __name__ == "__main__":
     fr = FaceRecognition()

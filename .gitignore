@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 
 faces_under.zip
+
+faces/
