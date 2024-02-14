@@ -106,5 +106,6 @@ def create_download_folder(subfolder):
 
 
 if __name__ == "__main__":
+    create_download_folder("faces")
     fr = FaceRecognition()
     fr.run_recognition()
