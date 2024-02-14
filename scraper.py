@@ -71,6 +71,17 @@ def download_images(img_urls, download_folder):
         except Exception as e:
             print(f"Error downloading {img_data}: {e}")
 
+def create_download_folder(subfolder):
+    main_directory = os.path.dirname(os.path.realpath(__file__))
+    download_folder = os.path.join(main_directory, subfolder)
+
+    if not os.path.exists(download_folder):
+        try:
+            os.makedirs(download_folder)
+            print(f"Download folder created: {download_folder}")
+        except Exception as e:
+            print(f"Error creating download folder: {e}")
+
 
 #check if running as script
 if __name__ == '__main__':
