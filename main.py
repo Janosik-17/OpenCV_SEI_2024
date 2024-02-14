@@ -3,7 +3,6 @@ import numpy as np
 import face_recognition
 import os, sys
 import math
-import scraper
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
