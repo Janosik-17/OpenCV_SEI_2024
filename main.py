@@ -97,14 +97,14 @@ class FaceRecognition:
                 right *= 4
                 left *= 4
 
-                if name == "Unknown":
-                    square_color = (0, 0, 255)
+                if confidence != "Unknown":
+                    square_color = (0, 255, 0)  # Green for known faces
                 else:
-                    square_color = (0, 255, 0)
+                    square_color = (0, 0, 255)  # Red for unknown faces
 
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
-                cv2.putText(frame, name, (left + 6, bottom - 6), cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
+                cv2.putText(frame, f"{name} ({confidence})", (left + 6, bottom - 6),cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
 
             cv2.imshow("Face recognition", frame)
 
