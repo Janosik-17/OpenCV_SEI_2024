@@ -162,3 +162,4 @@ cython_debug/
 faces_under.zip
 
 faces/
+facial_encodings.pkl
