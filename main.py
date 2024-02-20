@@ -3,6 +3,7 @@ import numpy as np
 import face_recognition
 import os, sys
 import math
+import pickle
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -27,17 +28,30 @@ class FaceRecognition:
         self.encode_faces()
     
     def encode_faces(self):
-        for image in os.listdir("faces"):
-            face_image = face_recognition.load_image_file(f"faces/{image}")
-            face_encoding = face_recognition.face_encodings(face_image)[0]
+        main_directory = os.path.dirname(os.path.realpath(__file__))
+        faces_saved = os.path.join(main_directory, "facial_encodings.pkl")
         
-        #exception handling if "faces" folder is empty
+        if not os.path.exists(faces_saved):
+            for image in os.listdir("faces"):
+                face_image = face_recognition.load_image_file(f"faces/{image}")
+                face_encoding = face_recognition.face_encodings(face_image)[0]
+            
+            #exception handling if "faces" folder is empty
+                try:
+                    self.known_face_encodings.append(face_encoding)
+                    print(f"Added image: {image}")
+                except UnboundLocalError:
+                    print("No item in directory 'faces'.")
+
+            with open("facial_encodings.pkl", "wb") as f:
+                pickle.dump(self.known_face_encodings, f)
+
+        for image in os.listdir("faces"):
             try:
-                self.known_face_encodings.append(face_encoding)
                 self.known_face_names.append(image)
             except UnboundLocalError:
                 print("No item in directory 'faces'.")
-
+                
         print(self.known_face_names)
 
     def run_recognition(self):
@@ -45,6 +59,9 @@ class FaceRecognition:
 
         if not video_capture.isOpened():
             sys.exit("Video source not found...")
+
+        with open("facial_encodings.pkl", "rb") as f:
+            self.known_face_encodings = pickle.load(f)
 
         while True:
             ret, frame = video_capture.read()
@@ -55,7 +72,7 @@ class FaceRecognition:
 
                 self.face_locations = face_recognition.face_locations(rgb_small_frame)
                 self.face_encodings = face_recognition.face_encodings(rgb_small_frame)
-
+            
                 self.face_names = []
                 for face_encoding in self.face_encodings:
                     matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
@@ -80,8 +97,13 @@ class FaceRecognition:
                 right *= 4
                 left *= 4
 
-                cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), -1)
+                if name == "Unknown":
+                    square_color = (0, 0, 255)
+                else:
+                    square_color = (0, 255, 0)
+
+                cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
+                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
                 cv2.putText(frame, name, (left + 6, bottom - 6), cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
 
             cv2.imshow("Face recognition", frame)
