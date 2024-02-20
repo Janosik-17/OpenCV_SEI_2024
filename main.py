@@ -16,6 +16,7 @@ def face_confidence(face_distace, face_match_threshold=0.6):
         value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
         return str(round(value, 2)) + "%"
 
+
 class FaceRecognition:
     face_locations = []
     face_encodings = []
@@ -24,9 +25,11 @@ class FaceRecognition:
     known_face_encodings = []
     process_current_frame = True
 
+
     def __init__(self):
         self.encode_faces()
     
+
     def encode_faces(self):
         main_directory = os.path.dirname(os.path.realpath(__file__))
         faces_saved = os.path.join(main_directory, "facial_encodings.pkl")
@@ -54,6 +57,7 @@ class FaceRecognition:
                 
         print(self.known_face_names)
 
+
     def run_recognition(self):
         video_capture = cv2.VideoCapture(0)
 
@@ -72,8 +76,8 @@ class FaceRecognition:
 
                 self.face_locations = face_recognition.face_locations(rgb_small_frame)
                 self.face_encodings = face_recognition.face_encodings(rgb_small_frame)
-            
                 self.face_names = []
+
                 for face_encoding in self.face_encodings:
                     matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
                     name = "Unknown"
@@ -90,7 +94,6 @@ class FaceRecognition:
 
             self.process_current_frame = not self.process_current_frame
 
-            # Display annotations
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
                 top *= 4
                 bottom *= 4
