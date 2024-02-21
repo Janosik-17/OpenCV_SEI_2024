@@ -66,7 +66,7 @@ def download_images(img_urls, download_folder):
             response = requests.get(img_url)
             
             # Extract filename from URL
-            filename = (os.path.basename(img_url)).encode("utf-8")
+            filename = (os.path.basename(img_url))
             filename = strip_endnum(str(filename))
             
             # Save the image to the specified folder
