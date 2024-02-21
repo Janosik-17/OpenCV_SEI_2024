@@ -4,6 +4,7 @@ import face_recognition
 import os, sys
 import math
 import pickle
+import re
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -89,7 +90,6 @@ class FaceRecognition:
                     if matches[best_match_index]:
                         name = self.known_face_names[best_match_index]
                         confidence = face_confidence(face_distaces[best_match_index])
-
                     self.face_names.append(f"{name} ({confidence})")
 
             self.process_current_frame = not self.process_current_frame
@@ -105,11 +105,13 @@ class FaceRecognition:
                 else:
                     square_color = (0, 0, 255)  # Red for unknown faces
 
+                name = strip_string(name)
+
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
-                cv2.putText(frame, f"{name} ({confidence})", (left + 6, bottom - 6),
+                cv2.putText(frame, f"{name}", (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
-
+                print(name)
             cv2.imshow("Face recognition", frame)
 
             if cv2.waitKey(1) == ord("q"):
@@ -130,6 +132,10 @@ def create_download_folder(subfolder):
         except Exception as e:
             print(f"Error creating download folder: {e}")
 
+
+def strip_string(input_string):
+    string = re.sub(r'\([^)]*\)$', '', input_string)
+    return string
 
 if __name__ == "__main__":
     create_download_folder("faces")
