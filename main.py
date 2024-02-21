@@ -5,6 +5,7 @@ import os, sys
 import math
 import pickle
 import re
+from statistics import mode
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -25,7 +26,7 @@ class FaceRecognition:
     known_face_names = []
     known_face_encodings = []
     process_current_frame = True
-
+    name_list = []
 
     def __init__(self):
         self.encode_faces()
@@ -93,7 +94,10 @@ class FaceRecognition:
                     self.face_names.append(f"{name} ({confidence})")
 
             self.process_current_frame = not self.process_current_frame
+            # name_temp = strip_string(name)
+            # self.name_list.append(name_temp)
 
+            new_name = mode(self.name_list)
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
                 top *= 4
                 bottom *= 4
@@ -105,13 +109,12 @@ class FaceRecognition:
                 else:
                     square_color = (0, 0, 255)  # Red for unknown faces
 
-                # name = strip_string(name)
 
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
-                cv2.putText(frame, name, (left + 6, bottom - 6),
+                cv2.putText(frame, f"{new_name} ({confidence})", (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
-                print(name)
+                
             cv2.imshow("Face recognition", frame)
 
             if cv2.waitKey(1) == ord("q"):
