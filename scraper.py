@@ -15,7 +15,6 @@ def strip_endnum(string):
 
     return string
 
-
 def scrape_site(url_input):
     img_list = []
     info_list = []
