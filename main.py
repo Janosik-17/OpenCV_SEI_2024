@@ -112,7 +112,6 @@ class FaceRecognition:
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
                 cv2.putText(frame, name, (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
-                print(name)
                 if len(self.name_list) > 0:
                     if self.name_list[0] == name:
                         self.name_list.append(name)
@@ -122,6 +121,7 @@ class FaceRecognition:
                         self.name_list.clear()
                     else:
                         self.name_list.clear()
+                    print(name)
 
             cv2.imshow("Face recognition", frame)
 
