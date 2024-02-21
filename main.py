@@ -107,11 +107,6 @@ class FaceRecognition:
                     square_color = (0, 0, 255)  # Red for unknown faces
 
                 # name = strip_string(name)
-
-                cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
-                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
-                cv2.putText(frame, name, (left + 6, bottom - 6),
-                            cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
                 if len(self.name_list) > 0:
                     if self.name_list[0] == name:
                         self.name_list.append(name)
@@ -121,7 +116,14 @@ class FaceRecognition:
                         self.name_list.clear()
                     else:
                         self.name_list.clear()
+                else:
+                    self.name_list.append(name)
                     print(name)
+
+                cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
+                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
+                cv2.putText(frame, name, (left + 6, bottom - 6),
+                            cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
 
             cv2.imshow("Face recognition", frame)
 
