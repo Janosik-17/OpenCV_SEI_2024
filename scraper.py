@@ -1,7 +1,6 @@
 from requests_html import HTMLSession
 session = HTMLSession()
 from bs4 import BeautifulSoup
-from difflib import SequenceMatcher
 import requests
 import urllib.request
 import os
