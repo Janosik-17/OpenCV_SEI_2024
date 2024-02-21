@@ -10,8 +10,8 @@ koncovky = ["programy-a-projekty-skoly/", "nepedagogicka-podpora/", "kontakt-pod
 query_parameters = {"downloadformat": "jpg"}
 
 def strip_endnum(string):
-    pattern = r"\d*x*\d*.jpg$"
-    string = str(string).replace(pattern, "")
+    pattern = r"-\d*x*\d*.jpg$"
+    string = re.sub(pattern, '', string)
 
     return string
 
