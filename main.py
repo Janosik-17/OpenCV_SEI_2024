@@ -119,7 +119,7 @@ class FaceRecognition:
                         self.name_list.clear()
                 else:
                     self.name_list.append(name)
-                    print(name)
+                print(name)
 
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
