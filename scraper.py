@@ -1,13 +1,19 @@
 from requests_html import HTMLSession
 session = HTMLSession()
 from bs4 import BeautifulSoup
-from difflib import SequenceMatcher
 import requests
 import os
+import re
 
 base_url = "https://bilgym.sk/"
 koncovky = ["programy-a-projekty-skoly/", "nepedagogicka-podpora/", "kontakt-podporny-tim/", "kontakt-ucitelia/", "spravna-rada/", "kontakt-vedenie-skoly/"]
 query_parameters = {"downloadformat": "jpg"}
+
+def strip_endnum(string):
+    pattern = r"\d+.jpg$"
+    string = str(string).replace(pattern, "")
+
+    return string
 
 
 def scrape_site(url_input):
@@ -60,7 +66,8 @@ def download_images(img_urls, download_folder):
             response = requests.get(img_url)
             
             # Extract filename from URL
-            filename = os.path.basename(img_url)
+            filename = (os.path.basename(img_url)).encode("utf-8")
+            filename = strip_endnum(str(filename))
             
             # Save the image to the specified folder
             with open(os.path.join(download_folder, filename), "wb") as f:
