@@ -112,6 +112,7 @@ class FaceRecognition:
                         self.name_list.append(name)
                     elif len(self.name_list) >= 10:
                         name = self.name_list[0]
+                        self.name_list.append(name)
                     elif len(self.name_list) >= 150:
                         self.name_list.clear()
                     else:
