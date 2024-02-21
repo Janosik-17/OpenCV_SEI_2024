@@ -105,11 +105,11 @@ class FaceRecognition:
                 else:
                     square_color = (0, 0, 255)  # Red for unknown faces
 
-                name = strip_string(name)
+                # name = strip_string(name)
 
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
-                cv2.putText(frame, f"{name}", (left + 6, bottom - 6),
+                cv2.putText(frame, name, (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
                 print(name)
             cv2.imshow("Face recognition", frame)
