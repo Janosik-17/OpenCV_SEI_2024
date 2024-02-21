@@ -101,11 +101,11 @@ class FaceRecognition:
                 right *= 4
                 left *= 4
 
-                if confidence != "Unknown":
-                    square_color = (0, 255, 0)  # Green for known faces
-                else:
-                    square_color = (0, 0, 255)  # Red for unknown faces
-
+                #if confidence != "Unknown":
+                #    square_color = (0, 255, 0)  # Green for known faces
+                #else:
+                #    square_color = (0, 0, 255)  # Red for unknown faces
+                square_color = (0, 0, 255)
                 # name = strip_string(name)
                 if len(self.name_list) > 0:
                     if self.name_list[0] == name:
