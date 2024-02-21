@@ -93,6 +93,7 @@ def create_download_folder(subfolder):
 if __name__ == '__main__':
     img_list, info_list = scrape_all(koncovky)
     img_list = compile_list(img_list)
+    create_download_folder("faces")
     main_directory = os.path.dirname(os.path.realpath(__file__))
     faces = os.path.join(main_directory, "faces")
     download_images(img_list, faces)
