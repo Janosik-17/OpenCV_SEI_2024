@@ -25,6 +25,7 @@ class FaceRecognition:
     known_face_names = []
     known_face_encodings = []
     process_current_frame = True
+    name_list = []
 
 
     def __init__(self):
@@ -112,6 +113,16 @@ class FaceRecognition:
                 cv2.putText(frame, name, (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
                 print(name)
+                if len(self.name_list) > 0:
+                    if self.name_list[0] == name:
+                        self.name_list.append(name)
+                    elif len(self.name_list) >= 10:
+                        name = self.name_list[0]
+                    elif len(self.name_list) >= 150:
+                        self.name_list.clear()
+                    else:
+                        self.name_list.clear()
+
             cv2.imshow("Face recognition", frame)
 
             if cv2.waitKey(1) == ord("q"):
