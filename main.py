@@ -97,22 +97,22 @@ class FaceRecognition:
             # name_temp = strip_string(name)
             # self.name_list.append(name_temp)
 
-            new_name = mode(self.name_list)
+            #new_name = mode(self.name_list)
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
                 top *= 4
                 bottom *= 4
                 right *= 4
                 left *= 4
 
-                if confidence != "Unknown":
-                    square_color = (0, 255, 0)  # Green for known faces
-                else:
-                    square_color = (0, 0, 255)  # Red for unknown faces
-
+                #if confidence != "Unknown":
+                #    square_color = (0, 255, 0)  # Green for known faces
+                #else:
+                #    square_color = (0, 0, 255)  # Red for unknown faces
+                square_color = (0, 0, 255)
 
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
-                cv2.putText(frame, f"{new_name} ({confidence})", (left + 6, bottom - 6),
+                cv2.putText(frame, f"{name}", (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
                 
             cv2.imshow("Face recognition", frame)
