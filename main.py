@@ -99,17 +99,13 @@ class FaceRecognition:
                     self.face_names.append(f"{name} ({confidence})")
 
             self.process_current_frame = not self.process_current_frame
-            # name_temp = strip_string(name)
-            # self.name_list.append(name_temp)
 
-            #new_name = mode(self.name_list)
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
                 # Resizes image 4x
                 top *= 4
                 bottom *= 4
                 right *= 4
                 left *= 4
-
 
                 print(name)
 
@@ -169,6 +165,7 @@ def create_download_folder(subfolder):
 def strip_string(input_string):
     string = re.sub(r'\([^)]*\)$', '', input_string)
     return string
+
 
 #Creates donwload folder and runs the run_recognition function of the FaceRecognition class
 if __name__ == "__main__":
