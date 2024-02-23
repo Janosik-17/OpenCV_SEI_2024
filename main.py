@@ -5,7 +5,8 @@ import os, sys
 import math
 import pickle
 import re
-from statistics import mode
+import statistics
+from random import choice
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -19,6 +20,7 @@ def face_confidence(face_distace, face_match_threshold=0.6):
         return str(round(value, 2)) + "%"
 
 
+# Main FR class
 class FaceRecognition:
     face_locations = []
     face_encodings = []
@@ -28,10 +30,12 @@ class FaceRecognition:
     process_current_frame = True
     name_list = []
 
+    
     def __init__(self):
         self.encode_faces()
     
 
+    # Encode faces in directory "faces" and put them in "facial_encodings.pkl" if it doesnt exist
     def encode_faces(self):
         main_directory = os.path.dirname(os.path.realpath(__file__))
         faces_saved = os.path.join(main_directory, "facial_encodings.pkl")
@@ -59,13 +63,14 @@ class FaceRecognition:
                 
         print(self.known_face_names)
 
-
+    # Main recognition function
     def run_recognition(self):
         video_capture = cv2.VideoCapture(0)
 
         if not video_capture.isOpened():
             sys.exit("Video source not found...")
 
+        # Opens the pickle file with the encodings
         with open("facial_encodings.pkl", "rb") as f:
             self.known_face_encodings = pickle.load(f)
 
@@ -99,24 +104,47 @@ class FaceRecognition:
 
             #new_name = mode(self.name_list)
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
+                # Resizes image 4x
                 top *= 4
                 bottom *= 4
                 right *= 4
                 left *= 4
 
-                #if confidence != "Unknown":
-                #    square_color = (0, 255, 0)  # Green for known faces
-                #else:
-                #    square_color = (0, 0, 255)  # Red for unknown faces
+
+                print(name)
+
+                # Sets the basic square color red
                 square_color = (0, 0, 255)
 
+                # Strips the confidence from the name and appends it to name_list
+                name_check = strip_string(name)
+                self.name_list.append(name_check)
+
+                # If list is larger than 20 it prints and clears it to allow mult. faces
+                if len(self.name_list) > 20:
+                    print(self.name_list)
+                    self.name_list = []
+
+                # If list is larger that 2 it takes the mode of the list, and if exception, 
+                # takes random element from mult. mode
+                elif len(self.name_list) > 2:
+                    try:
+                        name = statistics.mode(self.name_list)
+                    except:
+                        mult_names = statistics.multimode(self.name_list)
+                        name = choice(mult_names)
+
+                print(name)
+
+                # Displays the frame and puts in the rectangle and text
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
                 cv2.putText(frame, f"{name}", (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
-                
+
             cv2.imshow("Face recognition", frame)
 
+            # Shutdown function
             if cv2.waitKey(1) == ord("q"):
                 break
         
@@ -124,6 +152,7 @@ class FaceRecognition:
         cv2.destroyAllWindows()
 
 
+# Creates a donwload folder in the main directory with tha name "subfolder"
 def create_download_folder(subfolder):
     main_directory = os.path.dirname(os.path.realpath(__file__))
     download_folder = os.path.join(main_directory, subfolder)
@@ -136,10 +165,12 @@ def create_download_folder(subfolder):
             print(f"Error creating download folder: {e}")
 
 
+# Strips the data in parenthesis from a string
 def strip_string(input_string):
     string = re.sub(r'\([^)]*\)$', '', input_string)
     return string
 
+#Creates donwload folder and runs the run_recognition function of the FaceRecognition class
 if __name__ == "__main__":
     create_download_folder("faces")
     fr = FaceRecognition()
