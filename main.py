@@ -5,6 +5,8 @@ import os, sys
 import math
 import pickle
 import re
+import statistics
+from random import choice
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -100,25 +102,24 @@ class FaceRecognition:
                 bottom *= 4
                 right *= 4
                 left *= 4
+                
+                print(name)
 
-                #if confidence != "Unknown":
-                #    square_color = (0, 255, 0)  # Green for known faces
-                #else:
-                #    square_color = (0, 0, 255)  # Red for unknown faces
                 square_color = (0, 0, 255)
-                # name = strip_string(name)
-                if len(self.name_list) > 0:
-                    if self.name_list[0] == name:
-                        self.name_list.append(name)
-                    elif len(self.name_list) >= 10:
-                        name = self.name_list[0]
-                        self.name_list.append(name)
-                    elif len(self.name_list) >= 20:
-                        self.name_list.clear()
-                    else:
-                        self.name_list.clear()
-                else:
-                    self.name_list.append(name)
+
+                name_check = strip_string(name)
+                self.name_list.append(name_check)
+
+                if len(self.name_list) > 20:
+                    print(self.name_list)
+                    self.name_list = []
+                elif len(self.name_list) > 2:
+                    try:
+                        name = statistics.mode(self.name_list)
+                    except:
+                        mult_names = statistics.multimode(self.name_list)
+                        name = choice(mult_names)
+
                 print(name)
 
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
