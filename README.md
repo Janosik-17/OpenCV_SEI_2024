@@ -1,4 +1,6 @@
 # OpenCV_SEI_2024
 An project using OpenCV, made for SEI.
 ## Disclaimer: 
-This is not original work, in this stage of development we are trying to learn how to use OpenCV and other packages by using other peoples code most importantly following a youtube video by Indently: https://www.youtube.com/watch?v=tl2eEBFEHqM. We hope to make something usefull/original, we are just not there yet. 
+Let me start like this, we are not resposible for the majority of this code. First of all I would like to thank ChatGPT nad Google Gemini for helping us make this possible.
+
+Filip and Jakub
