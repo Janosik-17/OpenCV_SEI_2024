@@ -102,15 +102,15 @@ class FaceRecognition:
                         confidence = face_confidence(face_distaces[best_match_index])
                     self.face_names.append(f"{name} ({confidence})")
                     
-                self.framecounter += 1
-                if confidence == "Unknown":
-                    if self.framecounter <=15:
-                        continue
-                    else:
-                        for top, right, bottom, left in self.face_locations:
-                            face_image = frame[top:bottom, left:right]
-                            self.savecounter += 1
-                            cv2.imwrite((os.path.join(download_folder), str(self.savecounter)+".jpg"), face_image)
+                    self.framecounter += 1
+                    if confidence == "Unknown":
+                        if self.framecounter <=15:
+                            continue
+                        else:
+                            for top, right, bottom, left in self.face_locations:
+                                face_image = frame[top:bottom, left:right]
+                                self.savecounter += 1
+                                cv2.imwrite((os.path.join(download_folder), str(self.savecounter)+".jpg"), face_image)
 
             self.process_current_frame = not self.process_current_frame
 
