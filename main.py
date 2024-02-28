@@ -29,6 +29,8 @@ class FaceRecognition:
     known_face_encodings = []
     process_current_frame = True
     name_list = []
+    framecounter = 0
+    filename = "a"
 
     
     def __init__(self):
@@ -102,18 +104,15 @@ class FaceRecognition:
                         confidence = face_confidence(face_distaces[best_match_index])
                     self.face_names.append(f"{name} ({confidence})")
                     
-                    framecounter += 1
                     if confidence == "Unknown":
-                        if framecounter <=15:
+                        if self.framecounter <=30:
                             continue
                         else:
-                            for (top, right, bottom, left) in self.face_locations:
+                            self.filename = self.filename + "a"
+                            for top, right, bottom, left in self.face_locations:
                                 face_image = frame[top:bottom, left:right]
-                                savecounter += 1
-                                filename = savecounter
-                                filename = str(filename)
-                                cv2.imwrite((os.path.join(download_folder), filename+".jpg"), face_image)
-
+                                cv2.imwrite((os.path.join(download_folder), self.filename+".jpg"), face_image)
+            self.framecounter += 1
             self.process_current_frame = not self.process_current_frame
 
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
