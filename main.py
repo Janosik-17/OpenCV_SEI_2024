@@ -102,6 +102,7 @@ class FaceRecognition:
                         confidence = face_confidence(face_distaces[best_match_index])
                     self.face_names.append(f"{name} ({confidence})")
                     
+                    # If the face on the image isn´t present in the database, this saves the frame
                     if confidence == "Unknown":
                         if self.framecounter <=30:
                             continue
