@@ -67,8 +67,6 @@ class FaceRecognition:
 
     # Main recognition function
     def run_recognition(self):
-        framecounter = 0
-        savecounter = 0
         main_directory = os.path.dirname(os.path.realpath(__file__))
         download_folder = os.path.join(main_directory, "faces")
         video_capture = cv2.VideoCapture(0)
