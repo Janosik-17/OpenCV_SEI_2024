@@ -31,8 +31,8 @@ class FaceRecognition:
     name_list = []
     framecounter = 0
     filename_counter = 0
-
     
+
     def __init__(self):
         self.encode_faces()
     
