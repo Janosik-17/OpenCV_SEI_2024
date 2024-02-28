@@ -30,7 +30,7 @@ class FaceRecognition:
     process_current_frame = True
     name_list = []
     framecounter = 0
-    filename = "a"
+    filename_counter = 0
 
     
     def __init__(self):
@@ -106,10 +106,11 @@ class FaceRecognition:
                         if self.framecounter <=30:
                             continue
                         else:
-                            self.filename = self.filename + "a"
+                            self.filename_counter += 1
                             for top, right, bottom, left in self.face_locations:
                                 face_image = frame
-                                cv2.imwrite((os.path.join(download_folder), self.filename+".jpg"), face_image)
+                                filename = f"unknown_{self.filename_counter}.jpg"
+                                cv2.imwrite(os.path.join(download_folder, filename), face_image)
             self.framecounter += 1
             self.process_current_frame = not self.process_current_frame
 
