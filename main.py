@@ -108,7 +108,7 @@ class FaceRecognition:
                         else:
                             self.filename = self.filename + "a"
                             for top, right, bottom, left in self.face_locations:
-                                face_image = frame[top:bottom, left:right]
+                                face_image = frame
                                 cv2.imwrite((os.path.join(download_folder), self.filename+".jpg"), face_image)
             self.framecounter += 1
             self.process_current_frame = not self.process_current_frame
