@@ -96,7 +96,7 @@ class FaceRecognition:
                     if matches[best_match_index]:
                         name = self.known_face_names[best_match_index]
                         confidence = face_confidence(face_distaces[best_match_index])
-                    self.face_names.append(f"{name} ({confidence})")
+                    self.face_names.append(f"{name}")
 
             self.process_current_frame = not self.process_current_frame
 
@@ -107,14 +107,11 @@ class FaceRecognition:
                 right *= 4
                 left *= 4
 
-                print(name)
-
                 # Sets the basic square color red
                 square_color = (0, 0, 255)
 
                 # Strips the confidence from the name and appends it to name_list
-                name_check = strip_string(name)
-                self.name_list.append(name_check)
+                self.name_list.append(name)
 
                 # If list is larger than 20 it prints and clears it to allow mult. faces
                 if len(self.name_list) > 20:
