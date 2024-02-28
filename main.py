@@ -29,6 +29,8 @@ class FaceRecognition:
     known_face_encodings = []
     process_current_frame = True
     name_list = []
+    framecounter = 0
+    savecounter = 0
 
     
     def __init__(self):
@@ -65,6 +67,8 @@ class FaceRecognition:
 
     # Main recognition function
     def run_recognition(self):
+        main_directory = os.path.dirname(os.path.realpath(__file__))
+        download_folder = os.path.join(main_directory, "faces")
         video_capture = cv2.VideoCapture(0)
 
         if not video_capture.isOpened():
@@ -97,6 +101,16 @@ class FaceRecognition:
                         name = self.known_face_names[best_match_index]
                         confidence = face_confidence(face_distaces[best_match_index])
                     self.face_names.append(f"{name} ({confidence})")
+                    
+                self.framecounter += 1
+                if confidence == "Unknown":
+                    if self.framecounter <=15:
+                        continue
+                    else:
+                        for top, right, bottom, left in self.face_locations:
+                            face_image = frame[top:bottom, left:right]
+                            self.savecounter += 1
+                            cv2.imwrite((os.path.join(download_folder), str(self.savecounter)+".jpg"), face_image)
 
             self.process_current_frame = not self.process_current_frame
 
