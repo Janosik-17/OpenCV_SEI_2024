@@ -6,7 +6,23 @@ import math
 import pickle
 import re
 import statistics
+from tkinter import *
 from random import choice
+
+# Making the popup for inputting the filename of an unrecognised face
+def popup_window():
+    window = Tk()
+    window.title("saving a new face")
+    window.geometry("200x200")
+    disp_text = Label(window, text="Success", font=("Arial Bold", 25))
+    disp_text.grid(column = 0, row = 0)
+    button = Button(window, text= "Save", font=("Arial Bold", 12), bg="dark green", fg="white", command = lambda:(window.destroy()))
+    button.grid(column=0, row=2)
+    input_text = Entry(window, width=10)
+    input_text.grid(column=0, row=1)
+    file_text = input_text.get()
+    window.mainloop()
+    return file_text
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -31,6 +47,8 @@ class FaceRecognition:
     name_list = []
     framecounter = 0
     filename_counter = 0
+    face_image = None
+    key = 0
     
 
     def __init__(self):
@@ -105,14 +123,14 @@ class FaceRecognition:
                     
                     # If the face on the image isn´t present in the database, this saves the frame
                     if confidence == "Unknown":
-                        if self.framecounter <= 120:
+                        if self.framecounter <= 30:
                             continue
                         else:
-                            self.filename_counter += 1
-                            for top, right, bottom, left in self.face_locations:
-                                face_image = frame
-                                filename = f"unknown_{self.filename_counter}.jpg"
-                                #cv2.imwrite(os.path.join(download_folder, filename), face_image)
+                            self.face_image = frame
+                            cv2.destroyAllWindows()
+                            self.key = 1
+            if self.key == 1:
+                break
             self.framecounter += 1
             
             self.process_current_frame = not self.process_current_frame
@@ -161,6 +179,12 @@ class FaceRecognition:
         video_capture.release()
         cv2.destroyAllWindows()
 
+        if self.key == 1:
+            main_directory = os.path.dirname(os.path.realpath(__file__))
+            download_folder = os.path.join(main_directory, "faces")
+            inputted_name = popup_window()
+            filename = f"{inputted_name}.jpg"  
+            cv2.imwrite(os.path.join(download_folder, filename), self.face_image)
 
 # Creates a donwload folder in the main directory with tha name "subfolder"
 def create_download_folder(subfolder):
