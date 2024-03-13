@@ -129,8 +129,6 @@ class FaceRecognition:
                             self.face_image = frame
                             cv2.destroyAllWindows()
                             self.key = 1
-            if self.key == 1:
-                break
             self.framecounter += 1
             
             self.process_current_frame = not self.process_current_frame
@@ -171,6 +169,13 @@ class FaceRecognition:
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
 
             cv2.imshow("Face recognition", frame)
+            if self.key == 1:
+                download_folder = os.path.join(main_directory, "faces")
+                inputted_name = popup_window()
+                filename = f"{inputted_name}.jpg"  
+                cv2.imwrite(os.path.join(download_folder, filename), self.face_image)
+                break
+
 
             # Shutdown function
             if cv2.waitKey(1) == ord("q"):
@@ -178,13 +183,6 @@ class FaceRecognition:
         
         video_capture.release()
         cv2.destroyAllWindows()
-
-        if self.key == 1:
-            main_directory = os.path.dirname(os.path.realpath(__file__))
-            download_folder = os.path.join(main_directory, "faces")
-            inputted_name = popup_window()
-            filename = f"{inputted_name}.jpg"  
-            cv2.imwrite(os.path.join(download_folder, filename), self.face_image)
 
 # Creates a donwload folder in the main directory with tha name "subfolder"
 def create_download_folder(subfolder):
