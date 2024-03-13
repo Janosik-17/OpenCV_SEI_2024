@@ -1,6 +1,7 @@
 from tkinter import *
 import cv2
 import os
+import sys
 
 def popup_window():
     window = Tk()
@@ -38,8 +39,9 @@ if key == 1:
     download_folder = os.path.join(main_directory, "faces")
     inputted_name = popup_window()
     filename = f"{inputted_name}.jpg"
+    filepath = os.path.join(download_folder, filename)
     try: 
-        cv2.imwrite(os.path.join(download_folder, filename), face_image)
+        cv2.imwrite(filepath, face_image)
         print("Success")
-    except:
-        print("Error saving file")
+    except Exception as e:
+        print("Error saving file:", e)
