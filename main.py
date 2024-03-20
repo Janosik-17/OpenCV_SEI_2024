@@ -36,18 +36,17 @@ def popup_window():
     return user_input
 
 def save_img(image):
-    if image != None:
-        main_directory = os.path.dirname(os.path.realpath(__file__))
-        download_folder = os.path.join(main_directory, "faces")
-        inputted_name = popup_window()
-        filename = f"{inputted_name}.jpg"
-        filepath = os.path.join(download_folder, filename)
-        try: 
-            cv2.imwrite(filepath, image)
-            print("Success")
-        except Exception as e:
-            print("Error saving file:", e)
-    return 0
+    main_directory = os.path.dirname(os.path.realpath(__file__))
+    download_folder = os.path.join(main_directory, "faces")
+    inputted_name = popup_window()
+    filename = f"{inputted_name}.jpg"
+    filepath = os.path.join(download_folder, filename)
+    try: 
+        cv2.imwrite(filepath, image)
+        print("Success")
+    except Exception as e:
+        print("Error saving file:", e)
+    return filename
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -145,13 +144,17 @@ class FaceRecognition:
                     
                     # If the face on the image isn´t present in the database, this saves the frame
                     if name == "Unknown":
-                        if self.framecounter <= 40:
+                        if self.framecounter <= 19:
                             continue
                         elif (statistics.multimode(self.name_list))[0] == "Unknown":
                             self.face_image = frame
                             cv2.destroyAllWindows()
                             self.framecounter = 0
-                            save_img(self.face_image)
+                            new_name = save_img(self.face_image)
+                            face_image = cv2.resize(self.face_image, (0, 0), fx=0.25, fy=0.25)
+                            new_small_frame = face_image[:, :, ::1]
+                            self.known_face_encodings.append(face_recognition.face_encodings(new_small_frame))
+                            self.known_face_names.append(new_name)
                         else: 
                             continue
             self.framecounter += 1
