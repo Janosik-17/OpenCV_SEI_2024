@@ -8,18 +8,6 @@ import re
 import statistics
 from random import choice
 
-#Calculate face confidence percentage
-def face_confidence(face_distace, face_match_threshold=0.6):
-    range = (1.0 - face_match_threshold)
-    linear_val = (1.0 - face_distace) / (range * 2.0)
-
-    if face_distace > face_match_threshold:
-        return str(round(linear_val * 100, 2)) + "%"
-    else:
-        value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
-        return str(round(value, 2)) + "%"
-
-
 # Main FR class
 class FaceRecognition:
     face_locations = []
@@ -92,27 +80,15 @@ class FaceRecognition:
                 for face_encoding in self.face_encodings:
                     matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
                     name = "Unknown"
-                    confidence = "Unknown"
 
                     face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distaces)
 
                     if matches[best_match_index]:
                         name = self.known_face_names[best_match_index]
-                        confidence = face_confidence(face_distaces[best_match_index])
 
-                    self.face_names.append(f"{name} ({confidence})")
+                    self.face_names.append(name)
                     
-                    # If the face on the image isn´t present in the database, this saves the frame
-                    if confidence == "Unknown":
-                        if self.framecounter <= 120:
-                            continue
-                        else:
-                            self.filename_counter += 1
-                            for top, right, bottom, left in self.face_locations:
-                                face_image = frame
-                                filename = f"unknown_{self.filename_counter}.jpg"
-                                #cv2.imwrite(os.path.join(download_folder, filename), face_image)
             self.framecounter += 1
             
             self.process_current_frame = not self.process_current_frame
@@ -161,6 +137,16 @@ class FaceRecognition:
         video_capture.release()
         cv2.destroyAllWindows()
 
+#Calculate face confidence percentage
+def face_confidence(face_distace, face_match_threshold=0.6):
+    range = (1.0 - face_match_threshold)
+    linear_val = (1.0 - face_distace) / (range * 2.0)
+
+    if face_distace > face_match_threshold:
+        return str(round(linear_val * 100, 2)) + "%"
+    else:
+        value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
+        return str(round(value, 2)) + "%"
 
 # Creates a donwload folder in the main directory with tha name "subfolder"
 def create_download_folder(subfolder):
