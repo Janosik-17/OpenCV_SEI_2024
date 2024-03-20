@@ -134,19 +134,17 @@ class FaceRecognition:
                 for face_encoding in self.face_encodings:
                     matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
                     name = "Unknown"
-                    confidence = "Unknown"
 
                     face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distaces)
 
                     if matches[best_match_index]:
                         name = self.known_face_names[best_match_index]
-                        confidence = face_confidence(face_distaces[best_match_index])
 
-                    self.face_names.append(f"{name} ({confidence})")
+                    self.face_names.append(name)
                     
                     # If the face on the image isn´t present in the database, this saves the frame
-                    if confidence == "Unknown":
+                    if name == "Unknown":
                         if self.framecounter <= 40:
                             continue
                         elif (statistics.multimode(self.name_list))[0] == "Unknown":
