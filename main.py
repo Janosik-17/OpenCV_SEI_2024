@@ -196,12 +196,6 @@ class FaceRecognition:
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
 
             cv2.imshow("Face recognition", frame)
-            if self.key == 1:
-                download_folder = os.path.join(main_directory, "faces")
-                inputted_name = popup_window()
-                filename = f"{inputted_name}.jpg"  
-                cv2.imwrite(os.path.join(download_folder, filename), self.face_image)
-                break
 
 
             # Shutdown function
