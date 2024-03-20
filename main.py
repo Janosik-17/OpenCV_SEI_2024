@@ -12,17 +12,42 @@ from random import choice
 # Making the popup for inputting the filename of an unrecognised face
 def popup_window():
     window = Tk()
-    window.title("saving a new face")
+    window.title("Saving a new face")
     window.geometry("200x200")
+
     disp_text = Label(window, text="Success", font=("Arial Bold", 25))
-    disp_text.grid(column = 0, row = 0)
-    button = Button(window, text= "Save", font=("Arial Bold", 12), bg="dark green", fg="white", command = lambda:(window.destroy()))
-    button.grid(column=0, row=2)
+    disp_text.grid(column=0, row=0)
+
     input_text = Entry(window, width=10)
     input_text.grid(column=0, row=1)
-    file_text = input_text.get()
+
+    # Function to retrieve input and close window
+    def handle_save():
+        global user_input
+        user_input = input_text.get()  # Get input text
+        window.destroy()  # Close the window
+
+    button = Button(window, text="Save", font=("Arial Bold", 12), bg="dark green", fg="white", command=handle_save)
+    button.grid(column=0, row=2)
+
     window.mainloop()
-    return file_text
+
+    # Return the retrieved input, not using file_text (modify if needed)
+    return user_input
+
+def save_img(image):
+    if image != None:
+        main_directory = os.path.dirname(os.path.realpath(__file__))
+        download_folder = os.path.join(main_directory, "faces")
+        inputted_name = popup_window()
+        filename = f"{inputted_name}.jpg"
+        filepath = os.path.join(download_folder, filename)
+        try: 
+            cv2.imwrite(filepath, image)
+            print("Success")
+        except Exception as e:
+            print("Error saving file:", e)
+    return 0
 
 #Calculate face confidence percentage
 def face_confidence(face_distace, face_match_threshold=0.6):
@@ -46,7 +71,6 @@ class FaceRecognition:
     process_current_frame = True
     name_list = []
     framecounter = 0
-    filename_counter = 0
     face_image = None
     key = 0
     
@@ -123,12 +147,15 @@ class FaceRecognition:
                     
                     # If the face on the image isn´t present in the database, this saves the frame
                     if confidence == "Unknown":
-                        if self.framecounter <= 30:
+                        if self.framecounter <= 40:
                             continue
-                        else:
+                        elif (statistics.multimode(self.name_list))[0] == "Unknown":
                             self.face_image = frame
                             cv2.destroyAllWindows()
-                            self.key = 1
+                            self.framecounter = 0
+                            save_img(self.face_image)
+                        else: 
+                            continue
             self.framecounter += 1
             
             self.process_current_frame = not self.process_current_frame
@@ -197,7 +224,7 @@ def create_download_folder(subfolder):
             print(f"Error creating download folder: {e}")
 
 
-# Strips the data in parenthesis from a string
+# Strips the data in parentheses from a string
 def strip_string(input_string):
     string = re.sub(r'\([^)]*\)$', '', input_string)
     return string
