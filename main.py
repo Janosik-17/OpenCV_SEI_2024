@@ -9,6 +9,9 @@ import statistics
 from tkinter import *
 from random import choice
 
+def flatten_first_dimension(multidimensional_array):
+  return [element for sub_array in multidimensional_array for element in sub_array[0]]
+
 # Making the popup for inputting the filename of an unrecognised face
 def popup_window():
     window = Tk()
@@ -43,7 +46,6 @@ def save_img(image):
     filepath = os.path.join(download_folder, filename)
     try: 
         cv2.imwrite(filepath, image)
-        print("Success")
     except Exception as e:
         print("Error saving file:", e)
     return filename
@@ -72,6 +74,7 @@ class FaceRecognition:
     framecounter = 0
     face_image = None
     key = 0
+    main_directory = os.path.dirname(os.path.realpath(__file__))
     
 
     def __init__(self):
@@ -80,14 +83,14 @@ class FaceRecognition:
 
     # Encode faces in directory "faces" and put them in "facial_encodings.pkl" if it doesnt exist
     def encode_faces(self):
-        main_directory = os.path.dirname(os.path.realpath(__file__))
-        faces_saved = os.path.join(main_directory, "facial_encodings.pkl")
+        faces_saved = os.path.join(self.main_directory, "facial_encodings.pkl")
+        faces_folder = os.path.join(self.main_directory, "faces")
         
         if not os.path.exists(faces_saved):
             for image in os.listdir("faces"):
                 face_image = face_recognition.load_image_file(f"faces/{image}")
                 face_encoding = face_recognition.face_encodings(face_image)[0]
-            
+            #tuto sme nieco nezakodovali
             #exception handling if "faces" folder is empty
                 try:
                     self.known_face_encodings.append(face_encoding)
@@ -98,7 +101,7 @@ class FaceRecognition:
             with open("facial_encodings.pkl", "wb") as f:
                 pickle.dump(self.known_face_encodings, f)
 
-        for image in os.listdir("faces"):
+        for image in faces_folder:
             try:
                 self.known_face_names.append(image)
             except UnboundLocalError:
@@ -108,8 +111,7 @@ class FaceRecognition:
 
     # Main recognition function
     def run_recognition(self):
-        main_directory = os.path.dirname(os.path.realpath(__file__))
-        download_folder = os.path.join(main_directory, "faces")
+        download_folder = os.path.join(self.main_directory, "faces")
         video_capture = cv2.VideoCapture(0)
 
         if not video_capture.isOpened():
@@ -131,14 +133,28 @@ class FaceRecognition:
                 self.face_names = []
 
                 for face_encoding in self.face_encodings:
-                    matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
+                    try:
+                        matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
+                    except Exception as e:
+                        print(e)
+                        try:
+                            face_encoding = flatten_first_dimension(face_encoding)
+                            matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
+                        except Exception as e:
+                            print(e)
                     name = "Unknown"
 
+                    face_encoding = flatten_first_dimension(face_encoding)
                     face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distaces)
 
-                    if matches[best_match_index]:
-                        name = self.known_face_names[best_match_index]
+                    try:
+                        if matches[best_match_index]:
+                            name = self.known_face_names[best_match_index]
+                    except Exception as e:
+                        print(e)
+                        name = "Match failed"
+                        continue
 
                     self.face_names.append(name)
                     
@@ -146,17 +162,29 @@ class FaceRecognition:
                     if name == "Unknown":
                         if self.framecounter <= 19:
                             continue
-                        elif (statistics.multimode(self.name_list))[0] == "Unknown":
-                            self.face_image = frame
-                            cv2.destroyAllWindows()
-                            self.framecounter = 0
-                            new_name = save_img(self.face_image)
-                            face_image = cv2.resize(self.face_image, (0, 0), fx=0.25, fy=0.25)
-                            new_small_frame = face_image[:, :, ::1]
-                            self.known_face_encodings.append(face_recognition.face_encodings(new_small_frame))
-                            self.known_face_names.append(new_name)
-                        else: 
-                            continue
+                        elif (statistics.mode(self.name_list)) == "Unknown":
+                            try:
+                                self.face_image = frame
+                                self.framecounter = 0
+                                new_name = save_img(self.face_image)
+                                self.known_face_names.append(new_name)
+                                cv2.destroyAllWindows()
+                                self.face_image = face_recognition.load_image_file(self.face_image)
+                                face_location = face_recognition.face_locations(self.face_image)
+                                encoding = face_recognition.face_encodings(self.face_image, face_location)[0]
+                                pickle_file_path = os.path.join(self.main_directory, "facial_encodings.pkl")
+                                with open(pickle_file_path, "rb") as f:
+                                    self.known_face_encodings = []
+                                    self.known_face_encodings = pickle.load(f)
+                                    self.known_face_encodings.append(encoding)
+                                with open(pickle_file_path, "wb") as f:
+                                    pickle.dump(self.known_face_encodings, f)
+                                print("Sucess")
+                            except Exception as e:
+                                print(e)
+                                continue
+                        else:
+                            print("failed")
             self.framecounter += 1
             
             self.process_current_frame = not self.process_current_frame
