@@ -8,6 +8,7 @@ import re
 import statistics
 from random import choice
 from tkinter import *
+import time
 
 def popup_window():
     window = Tk()
@@ -146,6 +147,7 @@ class FaceRecognition:
                                 #    self.known_face_encodings = pickle.load(f)
                                 self.known_face_encodings.append(encoding)
                                 print("Succ")
+                                time.sleep(5)
                                 #with open(pickle_file_path, "wb") as f:
                                 #    pickle.dump(self.known_face_encodings, f)
                                 
