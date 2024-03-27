@@ -127,6 +127,13 @@ class FaceRecognition:
                         name = self.known_face_names[best_match_index]
 
                     self.face_names.append(name)
+
+                    if self.framecounter >= 19:
+                        if name == "Unknown":
+                            try:
+                                
+                            except Exception as e:
+                                print(e)
                     
             self.framecounter += 1
             
