@@ -8,6 +8,19 @@ import re
 import statistics
 from random import choice
 
+def save_img(image):
+    main_directory = os.path.dirname(os.path.realpath(__file__))
+    download_folder = os.path.join(main_directory, "faces")
+    inputted_name = popup_window()
+    filename = f"{inputted_name}.jpg"
+    filepath = os.path.join(download_folder, filename)
+    try: 
+        cv2.imwrite(filepath, image)
+    except Exception as e:
+        print("Error saving file:", e)
+    return filename
+
+
 # Main FR class
 class FaceRecognition:
     face_locations = []
