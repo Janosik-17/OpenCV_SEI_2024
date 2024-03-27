@@ -141,7 +141,7 @@ class FaceRecognition:
                                 self.known_face_names.append(new_name)
                                 self.face_image = face_recognition.load_image_file(filepath_new)
                                 encoding = face_recognition.face_encodings(self.face_image)[0]
-                                @pickle_file_path_temp = os.path.join(main_directory, "facial_encodings_temp.pkl")
+                                pickle_file_path_temp = os.path.join(main_directory, "facial_encodings_temp.pkl")
                                 #with open(pickle_file_path, "rb") as f:
                                 #    self.known_face_encodings = []
                                 #    self.known_face_encodings = pickle.load(f)
