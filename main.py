@@ -136,8 +136,7 @@ class FaceRecognition:
                                 cv2.destroyAllWindows()
                                 self.known_face_names.append(new_name)
                                 self.face_image = face_recognition.load_image_file(filepath_new)
-                                face_location = face_recognition.face_locations(self.face_image)
-                                encoding = face_recognition.face_encodings(self.face_image, face_location)[0]
+                                encoding = face_recognition.face_encodings(self.face_image)[0]
                                 #pickle_file_path = os.path.join(self.main_directory, "facial_encodings.pkl")
                                 #with open(pickle_file_path, "rb") as f:
                                 #    self.known_face_encodings = []
