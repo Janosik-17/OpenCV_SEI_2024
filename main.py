@@ -8,6 +8,7 @@ import re
 import statistics
 from random import choice
 from tkinter import *
+import time
 
 def popup_window():
     window = Tk()
@@ -129,7 +130,11 @@ class FaceRecognition:
                     self.face_names.append(name)
 
                     if self.framecounter >= 19:
-                        if statistics.mode(self.name_list) == "Unknown":
+                        try:
+                            gay = statistics.mode(self.name_list)
+                        except Exception as e:
+                            print(e)
+                        if gay == "Unknown":
                             try:
                                 self.framcounter = 0
                                 new_name, filepath_new = save_img(frame)
@@ -142,6 +147,7 @@ class FaceRecognition:
                                 #    self.known_face_encodings = pickle.load(f)
                                 self.known_face_encodings.append(encoding)
                                 print("Succ")
+                                time.sleep(5)
                                 #with open(pickle_file_path, "wb") as f:
                                 #    pickle.dump(self.known_face_encodings, f)
                                 
