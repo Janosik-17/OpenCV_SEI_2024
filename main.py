@@ -124,13 +124,8 @@ class FaceRecognition:
                     face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distaces)
 
-                    try:
-                        if matches[best_match_index]:
-                            name = self.known_face_names[best_match_index]
-                    except Exception as e:
-                        print(e)
-                        name = "Match failed"
-                        continue
+                    if matches[best_match_index]:
+                        name = self.known_face_names[best_match_index]
 
                     self.face_names.append(name)
 
@@ -141,19 +136,18 @@ class FaceRecognition:
                             print(e)
                         if gay == "Unknown":
                             try:
-                                self.framecounter = 0
+                                self.framcounter = 0
                                 new_name, filepath_new = save_img(frame)
                                 self.known_face_names.append(new_name)
                                 self.face_image = face_recognition.load_image_file(filepath_new)
                                 encoding = face_recognition.face_encodings(self.face_image)[0]
-                                #pickle_file_path = os.path.join(self.main_directory, "facial_encodings.pkl")
+                                @pickle_file_path_temp = os.path.join(main_directory, "facial_encodings_temp.pkl")
                                 #with open(pickle_file_path, "rb") as f:
                                 #    self.known_face_encodings = []
                                 #    self.known_face_encodings = pickle.load(f)
                                 self.known_face_encodings.append(encoding)
                                 print("Succ")
-                                self.name_list = []
-                                time.sleep(2)
+                                time.sleep(5)
                                 
                                 #with open(pickle_file_path, "wb") as f:
                                 #    pickle.dump(self.known_face_encodings, f)
