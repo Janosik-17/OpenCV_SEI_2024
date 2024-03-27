@@ -129,9 +129,9 @@ class FaceRecognition:
                     self.face_names.append(name)
 
                     if self.framecounter >= 19:
-                        if name == "Unknown":
+                        if statistics.multimode(self.name_list)[0] == "Unknown":
                             try:
-                                
+                                save_img(frame)
                             except Exception as e:
                                 print(e)
                     
