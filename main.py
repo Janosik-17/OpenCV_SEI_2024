@@ -7,6 +7,32 @@ import pickle
 import re
 import statistics
 from random import choice
+from tkinter import *
+
+def popup_window():
+    window = Tk()
+    window.title("Saving a new face")
+    window.geometry("200x200")
+
+    disp_text = Label(window, text="Success", font=("Arial Bold", 25))
+    disp_text.grid(column=0, row=0)
+
+    input_text = Entry(window, width=10)
+    input_text.grid(column=0, row=1)
+
+    # Function to retrieve input and close window
+    def handle_save():
+        global user_input
+        user_input = input_text.get()  # Get input text
+        window.destroy()  # Close the window
+
+    button = Button(window, text="Save", font=("Arial Bold", 12), bg="dark green", fg="white", command=handle_save)
+    button.grid(column=0, row=2)
+
+    window.mainloop()
+
+    # Return the retrieved input, not using file_text (modify if needed)
+    return user_input
 
 def save_img(image):
     main_directory = os.path.dirname(os.path.realpath(__file__))
