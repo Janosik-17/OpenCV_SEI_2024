@@ -136,7 +136,7 @@ class FaceRecognition:
                             print(e)
                         if gay == "Unknown":
                             try:
-                                self.framcounter = 0
+                                self.framecounter = 0
                                 new_name, filepath_new = save_img(frame)
                                 self.known_face_names.append(new_name)
                                 self.face_image = face_recognition.load_image_file(filepath_new)
