@@ -9,8 +9,12 @@ import statistics
 from tkinter import *
 from random import choice
 
-def flatten_first_dimension(multidimensional_array):
-  return [element for sub_array in multidimensional_array for element in sub_array[0]]
+
+
+def add_subarrays_to_list(multidimensional_array, single_dimensional_list):
+  for sub_array in multidimensional_array:
+    single_dimensional_list.append(sub_array)
+    return 0
 
 # Making the popup for inputting the filename of an unrecognised face
 def popup_window():
@@ -137,14 +141,9 @@ class FaceRecognition:
                         matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
                     except Exception as e:
                         print(e)
-                        try:
-                            face_encoding = flatten_first_dimension(face_encoding)
-                            matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
-                        except Exception as e:
-                            print(e)
+                        continue
                     name = "Unknown"
 
-                    face_encoding = flatten_first_dimension(face_encoding)
                     face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distaces)
 
@@ -169,16 +168,23 @@ class FaceRecognition:
                                 new_name = save_img(self.face_image)
                                 self.known_face_names.append(new_name)
                                 cv2.destroyAllWindows()
-                                self.face_image = face_recognition.load_image_file(self.face_image)
-                                face_location = face_recognition.face_locations(self.face_image)
-                                encoding = face_recognition.face_encodings(self.face_image, face_location)[0]
-                                pickle_file_path = os.path.join(self.main_directory, "facial_encodings.pkl")
-                                with open(pickle_file_path, "rb") as f:
-                                    self.known_face_encodings = []
+                                #self.face_image = face_recognition.load_image_file(self.face_image)
+                                small_frame2 = cv2.resize(self.face_image, (0, 0), fx=0.25, fy=0.25)
+                                rgb_small_frame2 = small_frame2[:, :, ::1]
+                                encodings = face_recognition.face_encodings(rgb_small_frame2)
+                                encoding = encodings[0]
+                                self.known_face_encodings = []
+                                with open("facial_encodings.pkl", "rb") as f:
                                     self.known_face_encodings = pickle.load(f)
-                                    self.known_face_encodings.append(encoding)
-                                with open(pickle_file_path, "wb") as f:
-                                    pickle.dump(self.known_face_encodings, f)
+                                add_subarrays_to_list(encoding, self.known_face_encodings)
+                                
+                                #pickle_file_path = os.path.join(self.main_directory, "facial_encodings.pkl")
+                                #with open(pickle_file_path, "rb") as f:
+                                #    self.known_face_encodings = []
+                                #    self.known_face_encodings = pickle.load(f)
+                                #    self.known_face_encodings.append(encoding)
+                                #with open(pickle_file_path, "wb") as f:
+                                #    pickle.dump(self.known_face_encodings, f)
                                 print("Sucess")
                             except Exception as e:
                                 print(e)
@@ -258,3 +264,4 @@ if __name__ == "__main__":
     create_download_folder("faces")
     fr = FaceRecognition()
     fr.run_recognition()
+
