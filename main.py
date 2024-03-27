@@ -147,7 +147,9 @@ class FaceRecognition:
                                 time.sleep(1)
                                 with open(pickle_file_path, "rb") as f:
                                     self.known_face_encodings = []
-                                    self.known_face_encodings = pickle.load(f)
+                                    temp_pkl_list = []
+                                    for element in pickle.load(f):
+                                        temp_pkl_list.append(element)
                                     f.close()
                                 time.sleep(1)
                                 with open(pickle_file_path_temp, "wb") as f:
@@ -156,9 +158,13 @@ class FaceRecognition:
                                 time.sleep(1)
                                 with open(pickle_file_path_temp, "rb") as f:
                                     encodings = pickle.load(f)
+                                    for element in temp_pkl_list:
+                                        self.known_face_encodings.append(element)
                                     self.known_face_encodings.append(encodings[0])
                                     f.close()
-                                time.sleep(2)
+                                time.sleep(1)
+                                os.remove(pickle_file_path_temp)
+                                time.sleep(1)
                                 
                             except Exception as e:
                                 print(e)
