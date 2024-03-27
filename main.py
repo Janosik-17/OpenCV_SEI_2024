@@ -124,8 +124,13 @@ class FaceRecognition:
                     face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
                     best_match_index = np.argmin(face_distaces)
 
-                    if matches[best_match_index]:
-                        name = self.known_face_names[best_match_index]
+                    try:
+                        if matches[best_match_index]:
+                            name = self.known_face_names[best_match_index]
+                    except Exception as e:
+                        print(e)
+                        name = "Match failed"
+                        continue
 
                     self.face_names.append(name)
 
@@ -147,7 +152,9 @@ class FaceRecognition:
                                 #    self.known_face_encodings = pickle.load(f)
                                 self.known_face_encodings.append(encoding)
                                 print("Succ")
-                                time.sleep(5)
+                                self.name_list = []
+                                time.sleep(2)
+                                
                                 #with open(pickle_file_path, "wb") as f:
                                 #    pickle.dump(self.known_face_encodings, f)
                                 
