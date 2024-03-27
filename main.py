@@ -44,7 +44,7 @@ def save_img(image):
         cv2.imwrite(filepath, image)
     except Exception as e:
         print("Error saving file:", e)
-    return filename
+    return filename, filepath
 
 
 # Main FR class
@@ -132,15 +132,10 @@ class FaceRecognition:
                         if statistics.multimode(self.name_list)[0] == "Unknown":
                             try:
                                 self.framcounter = 0
-                                new_name = save_img(frame)
+                                new_name, filepath_new = save_img(frame)
                                 cv2.destroyAllWindows()
-
-                                self.face_image = frame
-                                self.framecounter = 0
-                                new_name = save_img(self.face_image)
                                 self.known_face_names.append(new_name)
-                                cv2.destroyAllWindows()
-                                self.face_image = face_recognition.load_image_file(self.face_image)
+                                self.face_image = face_recognition.load_image_file(filepath_new)
                                 face_location = face_recognition.face_locations(self.face_image)
                                 encoding = face_recognition.face_encodings(self.face_image, face_location)[0]
                                 #pickle_file_path = os.path.join(self.main_directory, "facial_encodings.pkl")
