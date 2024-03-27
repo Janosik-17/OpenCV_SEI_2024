@@ -134,6 +134,22 @@ class FaceRecognition:
                                 self.framcounter = 0
                                 new_name = save_img(frame)
                                 cv2.destroyAllWindows()
+
+                                self.face_image = frame
+                                self.framecounter = 0
+                                new_name = save_img(self.face_image)
+                                self.known_face_names.append(new_name)
+                                cv2.destroyAllWindows()
+                                self.face_image = face_recognition.load_image_file(self.face_image)
+                                face_location = face_recognition.face_locations(self.face_image)
+                                encoding = face_recognition.face_encodings(self.face_image, face_location)[0]
+                                #pickle_file_path = os.path.join(self.main_directory, "facial_encodings.pkl")
+                                #with open(pickle_file_path, "rb") as f:
+                                #    self.known_face_encodings = []
+                                #    self.known_face_encodings = pickle.load(f)
+                                self.known_face_encodings.append(encoding)
+                                #with open(pickle_file_path, "wb") as f:
+                                #    pickle.dump(self.known_face_encodings, f)
                                 
                             except Exception as e:
                                 print(e)
