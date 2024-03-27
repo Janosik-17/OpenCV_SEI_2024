@@ -131,7 +131,10 @@ class FaceRecognition:
                     if self.framecounter >= 19:
                         if statistics.multimode(self.name_list)[0] == "Unknown":
                             try:
-                                save_img(frame)
+                                self.framcounter = 0
+                                new_name = save_img(frame)
+                                cv2.destroyAllWindows()
+                                
                             except Exception as e:
                                 print(e)
                     
