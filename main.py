@@ -111,7 +111,7 @@ class FaceRecognition:
 
             if self.process_current_frame:
                 small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-                rgb_small_frame = small_frame[:, :, ::-1]
+                rgb_small_frame = small_frame[:, :, ::1]
 
                 self.face_locations = face_recognition.face_locations(rgb_small_frame)
                 self.face_encodings = face_recognition.face_encodings(rgb_small_frame)
@@ -141,29 +141,28 @@ class FaceRecognition:
                                 self.known_face_names.append(new_name)
                                 self.face_image = face_recognition.load_image_file(filepath_new)
                                 encoding = face_recognition.face_encodings(self.face_image)[0]
-                                pickle_file_path_temp = os.path.join(main_directory, "facial_encodings_temp.pkl")
-                                pickle_file_path = os.path.join(main_directory, "facial_encodings.pkl")
                                 encodings = [encoding]
+                                self.name_list = []
                                 time.sleep(1)
-                                with open(pickle_file_path, "rb") as f:
+                                with open("facial_encodings.pkl", "rb") as f:
                                     self.known_face_encodings = []
                                     temp_pkl_list = []
                                     for element in pickle.load(f):
                                         temp_pkl_list.append(element)
                                     f.close()
                                 time.sleep(1)
-                                with open(pickle_file_path_temp, "wb") as f:
+                                with open("facial_encodings_temp.pkl", "wb") as f:
                                     pickle.dump(encodings, f)
                                     f.close()
                                 time.sleep(1)
-                                with open(pickle_file_path_temp, "rb") as f:
+                                with open("facial_encodings_temp.pkl", "rb") as f:
                                     encodings = pickle.load(f)
                                     for element in temp_pkl_list:
                                         self.known_face_encodings.append(element)
                                     self.known_face_encodings.append(encodings[0])
                                     f.close()
                                 time.sleep(1)
-                                os.remove(pickle_file_path_temp)
+                                os.remove("facial_encodings_temp.pkl")
                                 time.sleep(1)
                                 
                             except Exception as e:
