@@ -45,7 +45,7 @@ def save_img(image):
         cv2.imwrite(filepath, image)
     except Exception as e:
         print("Error saving file:", e)
-    return filename, filepath
+    return inputted_name, filepath
 
 
 # Main FR class
@@ -137,13 +137,19 @@ class FaceRecognition:
                         if gay == "Unknown":
                             try:
                                 #Reset the name mode list and the framecounter, create a popup to input the name and save the current frame by that name
-                                self.framcounter = 0
+                                self.framecounter = 0
+                                self.name_list = []
+                                time.sleep(1)
                                 new_name, filepath_new = save_img(frame)
                                 self.known_face_names.append(new_name)
-                                self.face_image = face_recognition.load_image_file(filepath_new)
-                                encoding = face_recognition.face_encodings(self.face_image)[0]
-                                encodings = [encoding, encoding]
-                                self.name_list = []
+                                try:
+                                    self.face_image = face_recognition.load_image_file(filepath_new)
+                                    encoding = face_recognition.face_encodings(self.face_image)[0]
+                                    encodings = [encoding, encoding]
+                                except Exception as e:
+                                    print(e)
+                                    encoding = face_recognition.face_encodings(frame)[0]
+                                    encodings = [encoding, encoding]
                                 time.sleep(1)
                                 with open("facial_encodings.pkl", "rb") as f:
                                     self.known_face_encodings = []
