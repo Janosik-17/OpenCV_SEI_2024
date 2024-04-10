@@ -129,19 +129,20 @@ class FaceRecognition:
 
                     self.face_names.append(name)
 
-                    if self.framecounter >= 19:
+                    if self.framecounter >= 39:
                         try:
                             gay = statistics.mode(self.name_list)
                         except Exception as e:
                             print(e)
                         if gay == "Unknown":
                             try:
+                                #Reset the name mode list and the framecounter, create a popup to input the name and save the current frame by that name
                                 self.framcounter = 0
                                 new_name, filepath_new = save_img(frame)
                                 self.known_face_names.append(new_name)
                                 self.face_image = face_recognition.load_image_file(filepath_new)
                                 encoding = face_recognition.face_encodings(self.face_image)[0]
-                                encodings = [encoding]
+                                encodings = [encoding, encoding]
                                 self.name_list = []
                                 time.sleep(1)
                                 with open("facial_encodings.pkl", "rb") as f:
@@ -161,7 +162,6 @@ class FaceRecognition:
                                         self.known_face_encodings.append(element)
                                     self.known_face_encodings.append(encodings[0])
                                     f.close()
-                                time.sleep(1)
                                 os.remove("facial_encodings_temp.pkl")
                                 time.sleep(1)
                                 
