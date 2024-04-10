@@ -164,7 +164,6 @@ class FaceRecognition:
                                 with open("facial_encodings_temp.pkl", "wb") as f:
                                     pickle.dump(encodings, f)
                                     f.close()
-                                time.sleep(1)
                                 with open("facial_encodings_temp.pkl", "rb") as f:
                                     encodings = pickle.load(f)
                                     for element in temp_pkl_list:
@@ -175,7 +174,6 @@ class FaceRecognition:
                                 with open("facial_encodings.pkl", "wb") as f:
                                     pickle.dump(self.known_face_encodings, f)
                                     f.close()
-                                time.sleep(1)
                                 
                             except Exception as e:
                                 print(e)
