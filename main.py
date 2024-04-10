@@ -82,8 +82,8 @@ class FaceRecognition:
                 except UnboundLocalError:
                     print("No item in directory 'faces'.")
 
-           # with open("facial_encodings.pkl", "wb") as f:
-                #pickle.dump(self.known_face_encodings, f)
+            with open("facial_encodings.pkl", "wb") as f:
+                pickle.dump(self.known_face_encodings, f)
 
         for image in os.listdir("faces"):
             try:
@@ -103,8 +103,8 @@ class FaceRecognition:
             sys.exit("Video source not found...")
 
         # Opens the pickle file with the encodings
-        #with open("facial_encodings.pkl", "rb") as f:
-        #    self.known_face_encodings = pickle.load(f)
+        with open("facial_encodings.pkl", "rb") as f:
+            self.known_face_encodings = pickle.load(f)
 
         while True:
             ret, frame = video_capture.read()
@@ -129,7 +129,7 @@ class FaceRecognition:
 
                     self.face_names.append(name)
 
-                    if self.framecounter >= 39:
+                    if self.framecounter >= 9:
                         try:
                             gay = statistics.mode(self.name_list)
                         except Exception as e:
@@ -139,7 +139,6 @@ class FaceRecognition:
                                 #Reset the name mode list and the framecounter, create a popup to input the name and save the current frame by that name
                                 self.framecounter = 0
                                 self.name_list = []
-                                time.sleep(1)
                                 new_name, filepath_new = save_img(frame)
                                 self.known_face_names.append(new_name)
                                 try:
@@ -192,7 +191,7 @@ class FaceRecognition:
                 self.name_list.append(name)
 
                 # If list is larger than 20 it prints and clears it to allow mult. faces
-                if len(self.name_list) > 13:
+                if len(self.name_list) > 20:
                     print(self.name_list)
                     self.name_list = []
 
