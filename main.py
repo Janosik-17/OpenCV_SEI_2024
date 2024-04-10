@@ -12,12 +12,12 @@ from tkinter import *
 def popup_window():
     window = Tk()
     window.title("Saving a new face")
-    window.geometry("200x200")
+    window.geometry("400x400")
 
-    disp_text = Label(window, text="Success", font=("Arial Bold", 25))
+    disp_text = Label(window, text="Success", font=("Arial Bold", 40))
     disp_text.grid(column=0, row=0)
 
-    input_text = Entry(window, width=10)
+    input_text = Entry(window, width=20)
     input_text.grid(column=0, row=1)
 
     # Function to retrieve input and close window
@@ -26,8 +26,8 @@ def popup_window():
         user_input = input_text.get()  # Get input text
         window.destroy()  # Close the window
 
-    button = Button(window, text="Save", font=("Arial Bold", 12), bg="dark green", fg="white", command=handle_save)
-    button.grid(column=0, row=2)
+    button = Button(window, text="Save", font=("Arial Bold", 20), bg="dark green", fg="white", command=handle_save)
+    button.grid(column=0, row=3)
 
     window.mainloop()
 
