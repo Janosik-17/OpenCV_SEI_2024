@@ -121,19 +121,23 @@ class FaceRecognition:
                     matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
                     name = "Unknown"
 
-                    face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
-                    best_match_index = np.argmin(face_distaces)
+                    try:
+                        face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
+                        best_match_index = np.argmin(face_distaces)
+                    except Exception as e:
+                        print(e)
 
                     if matches[best_match_index]:
                         name = self.known_face_names[best_match_index]
 
                     self.face_names.append(name)
 
-                    if self.framecounter >= 9:
+                    if self.framecounter >= 29:
                         try:
                             gay = statistics.mode(self.name_list)
                         except Exception as e:
                             print(e)
+                            gay = "nothing"
                         if gay == "Unknown":
                             try:
                                 #Reset the name mode list and the framecounter, create a popup to input the name and save the current frame by that name
@@ -168,6 +172,9 @@ class FaceRecognition:
                                     self.known_face_encodings.append(encodings[0])
                                     f.close()
                                 os.remove("facial_encodings_temp.pkl")
+                                with open("facial_encodings.pkl", "wb") as f:
+                                    pickle.dump(self.known_face_encodings, f)
+                                    f.close()
                                 time.sleep(1)
                                 
                             except Exception as e:
