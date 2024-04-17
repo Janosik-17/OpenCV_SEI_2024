@@ -8,6 +8,7 @@ import re
 import statistics
 from random import choice
 from tkinter import *
+import glob
 
 def popup_window():
     window = Tk()
@@ -47,6 +48,18 @@ def save_img(image):
     return inputted_name, filepath
 
 
+def sort_creation_time(path):
+    # Getting the list of files/directories 
+    # in the specified path Filtering the  
+    # list to exclude the directory names 
+    files = list(filter(os.path.isfile, glob.glob(path + "\*"))) 
+
+    # Sorting file list based on the  
+    # creation time of the files 
+    files.sort(key=os.path.getctime)
+
+    return(files)
+
 # Main FR class
 class FaceRecognition:
     face_locations = []
@@ -83,8 +96,9 @@ class FaceRecognition:
 
             with open("facial_encodings.pkl", "wb") as f:
                 pickle.dump(self.known_face_encodings, f)
-
-        for image in os.listdir("faces"):
+                
+        print(sort_creation_time("faces"))
+        for image in sort_creation_time("faces"):
             try:
                 self.known_face_names.append(image)
             except UnboundLocalError:
