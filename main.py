@@ -85,7 +85,7 @@ class FaceRecognition:
                 pickle.dump(self.known_face_encodings, f)
         try:
             with open("name_list.pkl", "rb") as f:
-                pickle.load(self.known_face_names, f)
+                self.known_face_names = pickle.load(f)
                 f.close()
         except Exception as e:
             print(e)
@@ -139,8 +139,11 @@ class FaceRecognition:
                         print(e)
 
                     #The index of the best matching face corresponds to its registered filename
-                    if matches[best_match_index]:
-                        name = self.known_face_names[best_match_index]
+                    try:
+                        if matches[best_match_index]:
+                            name = self.known_face_names[best_match_index]
+                    except Exception as e:
+                        print(e)
 
                     self.face_names.append(name)
 
