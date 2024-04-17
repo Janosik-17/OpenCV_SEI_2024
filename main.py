@@ -13,12 +13,12 @@ import time
 def popup_window():
     window = Tk()
     window.title("Saving a new face")
-    window.geometry("200x200")
+    window.geometry("400x400")
 
-    disp_text = Label(window, text="Success", font=("Arial Bold", 25))
+    disp_text = Label(window, text="Success", font=("Arial Bold", 40))
     disp_text.grid(column=0, row=0)
 
-    input_text = Entry(window, width=10)
+    input_text = Entry(window, width=20)
     input_text.grid(column=0, row=1)
 
     # Function to retrieve input and close window
@@ -27,8 +27,8 @@ def popup_window():
         user_input = input_text.get()  # Get input text
         window.destroy()  # Close the window
 
-    button = Button(window, text="Save", font=("Arial Bold", 12), bg="dark green", fg="white", command=handle_save)
-    button.grid(column=0, row=2)
+    button = Button(window, text="Save", font=("Arial Bold", 20), bg="dark green", fg="white", command=handle_save)
+    button.grid(column=0, row=3)
 
     window.mainloop()
 
@@ -45,7 +45,7 @@ def save_img(image):
         cv2.imwrite(filepath, image)
     except Exception as e:
         print("Error saving file:", e)
-    return filename, filepath
+    return inputted_name, filepath
 
 
 # Main FR class
@@ -82,14 +82,22 @@ class FaceRecognition:
                 except UnboundLocalError:
                     print("No item in directory 'faces'.")
 
-           # with open("facial_encodings.pkl", "wb") as f:
-                #pickle.dump(self.known_face_encodings, f)
-
-        for image in os.listdir("faces"):
-            try:
-                self.known_face_names.append(image)
-            except UnboundLocalError:
-                print("No item in directory 'faces'.")
+            with open("facial_encodings.pkl", "wb") as f:
+                pickle.dump(self.known_face_encodings, f)
+        try:
+            with open("name_list.pkl", "rb") as f:
+                self.known_face_names = pickle.load(f)
+                f.close()
+        except Exception as e:
+            print(e)
+            for image in os.listdir("faces"):
+                try:
+                    self.known_face_names.append(image)
+                    with open("name_list.pkl", "wb") as f:
+                        pickle.dump(self.known_face_names, f)
+                        f.close()
+                except UnboundLocalError:
+                    print("No item in directory 'faces'.")
                 
         print(self.known_face_names)
 
@@ -103,49 +111,102 @@ class FaceRecognition:
             sys.exit("Video source not found...")
 
         # Opens the pickle file with the encodings
-        #with open("facial_encodings.pkl", "rb") as f:
-        #    self.known_face_encodings = pickle.load(f)
+        with open("facial_encodings.pkl", "rb") as f:
+            self.known_face_encodings = pickle.load(f)
 
         while True:
             ret, frame = video_capture.read()
 
             if self.process_current_frame:
                 small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-                rgb_small_frame = small_frame[:, :, ::-1]
+                rgb_small_frame = small_frame[:, :, ::1]
 
+                #Finds all faces in the frame and makes their encodings
                 self.face_locations = face_recognition.face_locations(rgb_small_frame)
                 self.face_encodings = face_recognition.face_encodings(rgb_small_frame)
                 self.face_names = []
 
+                #For each face encoding in the image it is compared with the encoded faces in memory
                 for face_encoding in self.face_encodings:
                     matches = face_recognition.compare_faces(self.known_face_encodings, face_encoding)
                     name = "Unknown"
 
-                    face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
-                    best_match_index = np.argmin(face_distaces)
+                    try:
+                        #Finds the figurative distance between the saved faces and the face in the frame (Basically comparing them)
+                        face_distaces = face_recognition.face_distance(self.known_face_encodings, face_encoding)
+                        #The index of the best matching face is chosen
+                        best_match_index = np.argmin(face_distaces)
+                    except Exception as e:
+                        print(e)
 
-                    if matches[best_match_index]:
-                        name = self.known_face_names[best_match_index]
+                    #The index of the best matching face corresponds to its registered filename
+                    try:
+                        if matches[best_match_index]:
+                            name = self.known_face_names[best_match_index]
+                    except Exception as e:
+                        print(e)
 
                     self.face_names.append(name)
 
-                    if self.framecounter >= 19:
+                    if self.framecounter >= 29:
                         try:
                             gay = statistics.mode(self.name_list)
                         except Exception as e:
                             print(e)
+                            #Prevents the variable from being undefined, if the webcam doesnt register any face for a long time
+                            gay = "nothing"
+                        #If the face isnt recognised it is saved with an inputted name
                         if gay == "Unknown":
                             try:
-                                self.framcounter = 0
+                                #Reset the name mode list and the framecounter, create a popup to input the name and save the current frame by that name
+                                self.framecounter = 0
+                                self.name_list = []
                                 new_name, filepath_new = save_img(frame)
                                 self.known_face_names.append(new_name)
-                                self.face_image = face_recognition.load_image_file(filepath_new)
-                                encoding = face_recognition.face_encodings(self.face_image)[0]
-                                self.known_face_encodings.append(encoding)
-                                time.sleep(2)                                
+                                #Exception handling if the Image isnt saved for some reason (It will break the program on further starts, the pkl file must be removed and the saved image lost. I havent found a way around this it only has this problem on my computer because of github)
+                                try:
+                                    self.face_image = face_recognition.load_image_file(filepath_new)
+                                    encoding = face_recognition.face_encodings(self.face_image)[0]
+                                    encodings = [encoding, encoding]
+                                except Exception as e:
+                                    print(e)
+                                    encoding = face_recognition.face_encodings(frame)[0]
+                                    encodings = [encoding, encoding]
+                                #This part of the code saves and loads the arrays from .pkl files in order to have them all be in the same dimensional array type variable, without this the program doesnt work
+                                #It loads all the currently saved encodings
+                                with open("facial_encodings.pkl", "rb") as f:
+                                    self.known_face_encodings = []
+                                    temp_pkl_list = []
+                                    #Appends them to a temporary list
+                                    for element in pickle.load(f):
+                                        temp_pkl_list.append(element)
+                                    f.close()
+                                #Saves the new encoding within a list of itelf (to obtain the same type of array as the original saves have)
+                                with open("facial_encodings_temp.pkl", "wb") as f:
+                                    pickle.dump(encodings, f)
+                                    f.close()
+                                #Loads the newly saved encodings and appends it to the end of the known_face_encodings list which is utilized by this program to compare faces
+                                with open("facial_encodings_temp.pkl", "rb") as f:
+                                    encodings = pickle.load(f)
+                                    #First the list was wiped and now its repopulated with the newly loaded encodings from the original .pkl
+                                    for element in temp_pkl_list:
+                                        self.known_face_encodings.append(element)
+                                    #The new encoding is appended
+                                    self.known_face_encodings.append(encodings[0])
+                                    f.close()
+                                #The temporary file is removed
+                                os.remove("facial_encodings_temp.pkl")
+                                #Here it resaves the currently running image encodings to a .pkl file, this eliminates the need to delete the .pkl file and reencode the saved images again
+                                with open("facial_encodings.pkl", "wb") as f:
+                                    pickle.dump(self.known_face_encodings, f)
+                                    f.close()
+                                with open("name_list.pkl", "wb") as f:
+                                    pickle.dump(self.known_face_names, f)
+                                    f.close()
+
                             except Exception as e:
                                 print(e)
-                    
+            #Provides a way to track the passage of frames, it is wiped in the save new face part of the program above
             self.framecounter += 1
             
             self.process_current_frame = not self.process_current_frame
@@ -164,7 +225,7 @@ class FaceRecognition:
                 self.name_list.append(name)
 
                 # If list is larger than 20 it prints and clears it to allow mult. faces
-                if len(self.name_list) > 13:
+                if len(self.name_list) > 20:
                     print(self.name_list)
                     self.name_list = []
 
