@@ -83,12 +83,20 @@ class FaceRecognition:
 
             with open("facial_encodings.pkl", "wb") as f:
                 pickle.dump(self.known_face_encodings, f)
-
-        for image in os.listdir("faces"):
-            try:
-                self.known_face_names.append(image)
-            except UnboundLocalError:
-                print("No item in directory 'faces'.")
+        try:
+            with open("name_list.pkl", "rb") as f:
+                pickle.load(self.known_face_names, f)
+                f.close()
+        except Exception as e:
+            print(e)
+            for image in os.listdir("faces"):
+                try:
+                    self.known_face_names.append(image)
+                    with open("name_list.pkl", "wb") as f:
+                        pickle.dump(self.known_face_names, f)
+                        f.close()
+                except UnboundLocalError:
+                    print("No item in directory 'faces'.")
                 
         print(self.known_face_names)
 
@@ -188,6 +196,10 @@ class FaceRecognition:
                                 with open("facial_encodings.pkl", "wb") as f:
                                     pickle.dump(self.known_face_encodings, f)
                                     f.close()
+                                with open("name_list.pkl", "wb") as f:
+                                    pickle.dump(self.known_face_names, f)
+                                    f.close()
+
                                 
                             except Exception as e:
                                 print(e)
