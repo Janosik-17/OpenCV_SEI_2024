@@ -10,6 +10,28 @@ from random import choice
 from tkinter import *
 import time
 
+def delete_all(conf):
+    if conf == "y":
+        main_directory = os.path.dirname(os.path.realpath(__file__))
+        download_folder = os.path.join(main_directory, "faces")
+        file_locations = [os.path.join(main_directory, "facial_encodings.pkl"), os.path.join(main_directory, "name_list.pkl")]
+        for filename in os.listdir(download_folder):
+            file_path = os.path.join(download_folder, filename)
+            os.remove(file_path)
+            print(f"Deleted {filename}")
+        for file_path in file_locations:
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                print(e)
+        print("Files deleted...")
+        return 0
+    elif conf == "n":
+        print("Files retained...")
+        return 0
+
+delete_all(input("Dete files before proceeding? y/n ...\n"))
+
 def popup_window():
     window = Tk()
     window.title("Saving a new face")
