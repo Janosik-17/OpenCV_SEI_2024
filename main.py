@@ -8,6 +8,7 @@ import re
 import statistics
 from random import choice
 from tkinter import *
+import time
 
 def popup_window():
     window = Tk()
@@ -203,7 +204,6 @@ class FaceRecognition:
                                     pickle.dump(self.known_face_names, f)
                                     f.close()
 
-                                
                             except Exception as e:
                                 print(e)
             #Provides a way to track the passage of frames, it is wiped in the save new face part of the program above
