@@ -261,6 +261,8 @@ class FaceRecognition:
                         name = choice(mult_names)
 
                 print(name)
+                head, sep, tail = name.partition(".")
+                name=head
 
                 # Displays the frame and puts in the rectangle and text
                 cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
