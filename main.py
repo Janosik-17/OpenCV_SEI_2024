@@ -30,7 +30,7 @@ def delete_all(conf):
         print("Files retained...")
         return 0
 
-delete_all(input("Dete files before proceeding? y/n ...\n"))
+delete_all(input("Delete files before proceeding? y/n ...\n"))
 
 def popup_window():
     window = Tk()
