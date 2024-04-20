@@ -265,8 +265,8 @@ class FaceRecognition:
                 name=head
 
                 # Displays the frame and puts in the rectangle and text
-                cv2.rectangle(frame, (left, top), (right, bottom), square_color, 2)
-                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), square_color, -1)
+                cv2.rectangle(frame, (left-35, top-50), (right+35, bottom), square_color, 2)
+                cv2.rectangle(frame, (left-35, bottom - 35), (right+35, bottom-35), square_color, -1)
                 cv2.putText(frame, f"{name}", (left + 6, bottom - 6),
                             cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
 
