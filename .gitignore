@@ -164,3 +164,4 @@ faces_under.zip
 faces/
 facial_encodings.pkl
 name_list.pkl
+shape_predictor_68_face_landmarks.dat
