@@ -9,6 +9,20 @@ import statistics
 from random import choice
 from tkinter import *
 import time
+from requests_html import HTMLSession
+session = HTMLSession()
+from bs4 import BeautifulSoup
+import requests
+import os
+import re
+
+
+val = input("Do you  want to scrape images from Bilgym.sk? y/n")
+
+if val == "y":
+    
+
+
 
 def delete_all(conf):
     if conf == "y":
