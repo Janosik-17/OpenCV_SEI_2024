@@ -19,7 +19,7 @@ import re
 
 val = input("Do you  want to scrape images from Bilgym.sk? y/n")
 
-if val == "y":
+
     
 
 
